@@ -2,14 +2,33 @@
 #include <vector>
 #include <memory>
 #include <sstream>
+#include <unordered_map>
 
 
 #define WHITE_COLOR "\033[37m"
+#define BLACK_COLOR "\033[30m"
 #define PURPLE "\033[35m"
 #define RESET "\033[0m"
 #define RED "\033[31m"
 
 using namespace std;
+
+enum class GameMode { SINGLE_PLAYER, MULTI_PLAYER };
+
+enum class GameStatus { IN_PROGRESS, WHITE_WINS, BLACK_WINS, DRAW };
+
+
+unordered_map<string, string> figures = {
+    {"whiteChecker", "⚪ "},
+    {"blackChecker", "⚫ "},
+	{"whiteKing", string(WHITE_COLOR) + "👑" + RESET},
+    {"blackKing", string(BLACK_COLOR) + "👑" + RESET},
+    {"lightCell", string(WHITE_COLOR) + " □ " + RESET},
+    {"darkCell", string(PURPLE) + " ■ " + RESET},
+	{"whitePlayer", "👤"},
+	{"blackPlayer", "👤"}
+};
+
 
 enum class PlayerType { USER, BOT };
 
@@ -91,16 +110,25 @@ public:
                 bool isLightCell = ((row + col) % 2 == 0);
 
                 if (!cell.isEmpty()) {
-                    if (cell.piece->color == PieceColor::WHITE)
-                        cout << "⚪ ";
-                    else
-                        cout << "⚫ ";
+					if (cell.piece->type == PieceType::KING) {
+						if (cell.piece->color == PieceColor::WHITE)
+							cout << figures["whiteKing"];
+						else
+							cout << figures["blackKing"];
+					}
+					else
+					{
+                        if (cell.piece->color == PieceColor::WHITE)
+                            cout << figures["whiteChecker"];
+                        else
+                            cout << figures["blackChecker"];
+					}
                 }
                 else {
                     if (isLightCell)
-                        cout << WHITE_COLOR << " □ " << RESET;
+                        cout << figures["lightCell"];
                     else
-                        cout << PURPLE << " ■ " << RESET;
+                        cout << figures["darkCell"];
                 }
             }
             cout << endl;
